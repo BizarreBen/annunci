@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block login %}
+{% endblock %}
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+  <div class="mb-3 input-group">
+    <span class="input-group-text">Titolo</span>
+    <input type="text" class="form-control" id="titolo" name="titolo" value="{{annuncio.titolo}}">
+  </div>
+  {% if not request.url.endswith('/edit') %}
+  <div class="mb-3 input-group">
+    <span class="input-group-text">Indirizzo</span>
+    <input type="text" class="form-control" id="indirizzo" name="indirizzo" value="{{annuncio.indirizzo}}">
+  </div>
+  {% endif %}
+  <div class="mb-3 input-group">
+    <span class="input-group-text">Tipo</span>
+    <select class="form-select" id="tipo" name="tipo">
+      <option {% if annuncio is none %}selected{% endif %} disabled hidden>Seleziona</option>
+      <option {% if annuncio is not none and annuncio.tipo == 0 %}selected{% endif %} value="0">Casa indipendente</option>
+      <option {% if annuncio is not none and annuncio.tipo == 1 %}selected{% endif %} value="1">Appartamento</option>
+      <option {% if annuncio is not none and annuncio.tipo == 2 %}selected{% endif %} value="2">Loft</option>
+      <option {% if annuncio is not none and annuncio.tipo == 3 %}selected{% endif %} value="3">Villa</option>
+    </select>
+  </div>
+  <div class="mb-3 input-group">
+    <span class="input-group-text">Locali</span>
+    <select class="form-select" id="locali" name="locali">
+      <option {% if annuncio is none %}selected{% endif %} disabled hidden>Seleziona</option>
+      <option {% if annuncio is not none and annuncio.locali == 1 %}selected{% endif %} value="1">1</option>
+      <option {% if annuncio is not none and annuncio.locali == 2 %}selected{% endif %} value="2">2</option>
+      <option {% if annuncio is not none and annuncio.locali == 3 %}selected{% endif %} value="3">3</option>
+      <option {% if annuncio is not none and annuncio.locali == 4 %}selected{% endif %} value="4">4</option>
+      <option {% if annuncio is not none and annuncio.locali == 5 %}selected{% endif %} value="5">5+</option>
+    </select>
+  </div>
+  <div class="mb-3 form-">
+    <input type="textarea" placeholder="descrizione" class="form-control" id="descrizione" name="descrizione" value="{{annuncio.descrizione}}">
+    <label class="input-group-text">Descrizione</label>
+  </div>
+  <div class="mb-3 input-group">
+    <span class="input-group-text">Prezzo</span>
+    <input type="number" class="form-control" id="prezzo" name="prezzo" value="{{annuncio.prezzo}}">
+    <span class="input-group-text">€</span>
+  </div>
+  <div class="mb-3 form-check form-switch">
+    <input type="checkbox" class="form-check-input" role="switch" id="arredata" name="arredata" {% if annuncio.arredata %}checked{% endif %}>
+    <label class="form-check-label">Arredata</span>
+  </div>
+  <div class="mb-3 form-check form-switch">
+    <input type="checkbox" class="form-check-input" role="switch" id="visibile" name="visibile" {% if annuncio.visibile %}checked{% endif %}>
+    <label class="form-check-label">Visibile</span>
+  </div>
+  <div class="mb-3 input-group">
+    <fieldset class="d-flex">      
+      {% for immagine in annuncio.immagini %}
+        <div class="position-relative">
+          <img class="img-thumbnail" src="{{url_for('static', filename='uploads/' + immagine)}}">
+          <input class="form-check-input position-absolute top-0 start-0" type="checkbox" name="immagini_selection" value="{{immagine}}" checked>      
+        </div>
+      {% endfor %}
+    </fieldset>
+  </div>
+  <div class="mb-3 input-group">
+    <span class="input-group-text">Immagini</span>
+    <input type="file" class="form-control" id="immagini" name="immagini" multiple>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

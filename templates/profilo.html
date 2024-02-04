@@ -1,0 +1,53 @@
+{% import "macros.html" as macros%} {% extends "base.html" %} {% block content
+%}
+<div class="container">
+	<h1>{{ current_user.email }}</h1>
+
+  <article class="card">
+		<h3 class="card-header">Prenotazioni attive</h3>
+		{% if prenotazioni|length == 0 %}
+			<p class="my-2 mx-auto">Non ci sono prenotazioni attive</p>
+		{% else %}
+			<ul class="list-group list-group-flush">
+			{% for prenotazione in prenotazioni %}
+			{% if current_user.tipo == 1 %}
+				{% if prenotazione['status'] == 0 %}
+				{{ macros.prenotazione_card_pending(prenotazione) }}
+				{% else %}
+				{{ macros.prenotazione_card_fulfilled(prenotazione) }}
+				{% endif %}
+			{% else %}
+			{{ macros.prenotazione_card(prenotazione) }}
+			{% endif %}
+			{% endfor %}
+			</ul>
+		{% endif %}
+  </article>
+  {% if current_user.tipo == 1 %}
+  <article class="container">
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col">Titolo</th>
+				<th scope="col">Indirizzo</th>
+				<th scope="col">Prezzo</th>
+				<th scope="col"></th>
+			</tr>
+		</thead>
+		<tbody class="table-group-divider">
+		{% for annuncio in annunci %}
+			<tr>
+				<th scope="row">{{ loop.index }}</th>
+				<td>{{ annuncio.titolo }}</td>
+				<td>{{ annuncio.indirizzo }}</td>
+				<td>{{ annuncio.prezzo }}</td>
+				<td class="d-flex flex-row-reverse"><a href="annunci/{{ annuncio.id }}/edit" class="btn btn-primary">Modifica</a></td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+  </article>
+  {% endif %}
+</div>
+{% endblock %}

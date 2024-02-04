@@ -1,0 +1,122 @@
+{% macro annuncio_card(annuncio) %}
+<article class="card mb-3">
+  <div class="row mh-25">
+    <div class="col-md-4">
+      <div id="carousel{{annuncio.id}}" class="carousel slide">
+        <div class="carousel-indicators">
+					{% for i in range(annuncio.immagini|length) %}
+          <button
+            type="button"
+            data-bs-target="#carousel{{annuncio.id}}"
+            data-bs-slide-to="{{i}}"
+            {% if loop.first %}
+						class="active"
+            aria-current="true"
+						{% endif %}
+          ></button>
+					{% endfor %}
+        </div>
+        <div class="carousel-inner">
+					{% for immagine in annuncio.immagini %}
+          <div class="carousel-item {% if loop.first %}active{% endif %}">
+            <img class="d-block w-100" src="{{url_for('static', filename='uploads/' + immagine)}}" class="d-block w-100" />
+          </div>
+					{% endfor %}
+        </div>
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carousel{{annuncio.id}}"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carousel{{annuncio.id}}"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title"><a href="/annunci/{{annuncio.id}}">{{annuncio.titolo}}</a></h5>
+        <p class="card-text">
+					{{annuncio.descrizione}}
+        </p>
+        <hr>
+        <p class="card-text">
+					{{annuncio.prezzo}}
+        </p>
+      </div>
+    </div>
+  </div>
+</article>
+{% endmacro %}
+
+{% macro prenotazione_card(prenotazione) %}
+<li class="list-group-item d-flex align-items-center">
+  <h4 class="card-title my-auto align-self-center"><a href="/annunci/{{ prenotazione.annuncio.id }}">{{ prenotazione.annuncio.titolo }}</a></h5>
+  <p class="card-text my-auto ms-2">{{ prenotazione.fascia_oraria }}</p>
+  <p class="card-text my-auto ms-2">{{ prenotazione.data }}</p>
+  <p class="card-text my-auto ms-2 me-auto">{{ prenotazione.status }}</p>
+  <a href="/prenotazione/{{prenotazione.id_prenotazione}}/delete" class="btn btn-primary">Cancella</a>
+</li>
+{% endmacro %}
+
+{% macro prenotazione_card_fulfilled(prenotazione) %}
+<li class="list-group-item d-flex align-items-center">
+  <h4 class="card-title my-auto align-self-center"><a href="/annunci/{{ prenotazione.annuncio.id }}">{{ prenotazione.annuncio.titolo }}</a></h5>
+  <p class="card-text my-auto ms-2">{{ prenotazione.fascia_oraria }}</p>
+  <p class="card-text my-auto ms-2">{{ prenotazione.data }}</p>
+  <p class="card-text my-auto ms-2 me-auto">{{ prenotazione.status }}</p>
+</li>
+{% endmacro %}
+
+{% macro prenotazione_card_pending(prenotazione) %}
+<li class="list-group-item d-flex align-items-center">
+  <h4 class="card-title my-auto align-self-center"><a href="/annunci/{{ prenotazione.annuncio.id }}">{{ prenotazione.annuncio.titolo }}</a></h5>
+  <p class="card-text my-auto ms-2">{{ prenotazione.fascia_oraria }}</p>
+  <p class="card-text my-auto ms-2">{{ prenotazione.data }}</p>
+  <p class="card-text my-auto ms-2 me-auto">{{ prenotazione.status }}</p>
+  <div class="btn-group">
+    <a href="/prenotazione/{{prenotazione.id_prenotazione}}/confirm" class="btn btn-primary">Conferma</a>
+    <a href="/prenotazione/{{prenotazione.id_prenotazione}}/reject" class="btn btn-primary">Rifiuta</a>
+  </div>
+</li>
+{% endmacro %}
+
+{% macro prenotazione_section(giorni) %}
+<ul class="nav nav-tabs d-flex justify-content-center" id="nav-tab" role="tablist">
+  {% for giorno in giorni %}
+  <li class="nav-item" role="presentation">
+    <button class="nav-link {% if loop.first %} active {% endif %}" data-bs-toggle="tab" id="tab{{ loop.index0 }}" data-bs-target="#form{{ loop.index0 }}" type="button" role="tab" aria-controls="form{{ loop.index0 }}" aria-selected="{%if loop.first %}true{% else %}false{% endif %}">{{ giorno['giorno'] }}</button>
+  </li>
+  {% endfor %}
+</ul>
+<div class="tab-content" id="tabdiv">
+  {% for giorno in giorni %}
+      <form class="tab-pane{% if loop.first %} show active{% endif %}" id="form{{ loop.index0 }}" {% if loop.first %}disabled{% endif %} role="tabpanel" aria-labelledby="tab{{ loop.index0 }}" tabindex="0" method="POST">
+        <div class="d-flex flex-column align-items-center">
+          <input type="text" name="data" value="{{giorno['match']}}" hidden>
+          <div class="d-flex justify-content-center">
+          {% for orario, enabled in giorno['fasce'].items() %}
+            <input type="radio" class="btn-check" id="{{giorno['giorno']}}-{{orario}}" name="fascia_oraria" value="{{ loop.index0 }}" autocomplete="off" {% if not enabled %} disabled {% endif %}>
+            <label class="btn btn-primary" for="{{giorno['giorno']}}-{{orario}}">{{ orario }}</label>
+          {% endfor %}
+          </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" id="{{giorno['giorno']}}-check" name="virtuale">
+            <label class="form-check-label" for="{{giorno['giorno']}}-check">Modalità virtuale</label>
+          </div>
+          <button type="submit" class="btn btn-primary">Prenota</button>
+        </div>
+      </form>
+  {% endfor %}
+</div>
+{% endmacro %}

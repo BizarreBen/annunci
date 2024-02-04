@@ -1,0 +1,72 @@
+{% import "macros.html" as macros%}
+{% extends "base.html" %}
+{% block content %}
+<article class="container">
+	<section id="descrizione" class="row">
+		<div class="col-md-4">
+      <div id="carousel{{annuncio.id}}" class="carousel slide">
+        <div class="carousel-indicators">
+					{% for i in range(annuncio.immagini|length) %}
+          <button
+            type="button"
+            data-bs-target="#carousel{{annuncio.id}}"
+            data-bs-slide-to="{{i}}"
+            {% if loop.first %}
+						class="active"
+            aria-current="true"
+						{% endif %}
+          ></button>
+					{% endfor %}
+        </div>
+        <div class="carousel-inner">
+					{% for immagine in annuncio.immagini %}
+          <div class="carousel-item {% if loop.first %}active{% endif %}">
+            <img src="{{url_for('static', filename='uploads/' + immagine)}}" class="d-block w-100" />
+          </div>
+					{% endfor %}
+        </div>
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carousel{{annuncio.id}}"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carousel{{annuncio.id}}"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+		</div>
+		<div class="col-md-8">
+			<li class="list-group">
+				<ul class="list-group-item mb-0">{{ annuncio.titolo }}</ul>
+				<ul class="list-group-item mb-0">{{ annuncio.indirizzo }}</ul>
+				<ul class="list-group-item mb-0">{{ annuncio.tipo }}</ul>
+				<ul class="list-group-item mb-0">{{ annuncio.locali }}</ul>
+				<ul class="list-group-item mb-0">{{ annuncio.descrizione }}</ul>
+				<ul class="list-group-item mb-0">{{ annuncio.prezzo }}</ul>
+				<ul class="list-group-item mb-0">{{ annuncio.arredata }}</ul>
+				<ul class="list-group-item mb-0">{{ annuncio.id_locatore }}</ul>
+			</li>
+		</div>
+	</section>
+  {% if current_user.is_authenticated %}
+	  <hr>
+    <section id="prenotazione">
+    {% if prenotazione is not none %}
+      {{ macros.prenotazione_card(prenotazione) }}
+    {% else %}
+      {{ macros.prenotazione_section(giorni) }}
+    {% endif %}
+    </section>
+  {% endif %}
+</article>
+{% endblock %}

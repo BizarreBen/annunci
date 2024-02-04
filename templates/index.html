@@ -1,0 +1,12 @@
+{% import "macros.html" as macros%}
+{% extends "base.html" %}
+{% block content %}
+{% if order == "locali" %}
+    <a href="/?order=prezzo" class="btn"><i class="bi bi-arrow-down">Locali ASC</i></a>
+{% else %}
+    <a href="/?order=locali" class="btn"><i class="bi bi-arrow-up">Prezzo DESC</i></a>
+{% endif %}
+{% for annuncio in annunci %}
+{{ macros.annuncio_card(annuncio) }}
+{% endfor %}
+{% endblock %}
