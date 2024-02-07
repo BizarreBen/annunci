@@ -1,27 +1,35 @@
 {% macro annuncio_card(annuncio) %}
 <article class="card mb-3">
-  <div class="row mh-25">
-    <div class="col-md-4">
-      <div id="carousel{{annuncio.id}}" class="carousel slide">
+  <div class="row">
+    <div class="col-lg-4 col-md-6">
+      <div id="carousel{{annuncio.id}}" class="carousel slide h-100">
         <div class="carousel-indicators">
-					{% for i in range(annuncio.immagini|length) %}
+          {% for i in range(annuncio.immagini|length) %}
           <button
             type="button"
             data-bs-target="#carousel{{annuncio.id}}"
             data-bs-slide-to="{{i}}"
-            {% if loop.first %}
-						class="active"
+            {%
+            if
+            loop.first
+            %}
+            class="active"
             aria-current="true"
-						{% endif %}
+            {%
+            endif
+            %}
           ></button>
-					{% endfor %}
+          {% endfor %}
         </div>
         <div class="carousel-inner">
-					{% for immagine in annuncio.immagini %}
+          {% for immagine in annuncio.immagini %}
           <div class="carousel-item {% if loop.first %}active{% endif %}">
-            <img class="d-block w-100" src="{{url_for('static', filename='uploads/' + immagine)}}" class="d-block w-100" />
+            <img
+              class="d-block w-100"
+              src="{{url_for('static', filename='uploads/' + immagine)}}"
+            />
           </div>
-					{% endfor %}
+          {% endfor %}
         </div>
         <button
           class="carousel-control-prev"
@@ -43,80 +51,264 @@
         </button>
       </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-lg-8 col-md-6">
       <div class="card-body">
-        <h5 class="card-title"><a href="/annunci/{{annuncio.id}}">{{annuncio.titolo}}</a></h5>
-        <p class="card-text">
-					{{annuncio.descrizione}}
-        </p>
-        <hr>
-        <p class="card-text">
-					{{annuncio.prezzo}}
-        </p>
+        <h5 class="card-title">
+          <a href="/annunci/{{annuncio.id}}">{{annuncio.titolo}}</a>
+        </h5>
+        <p class="card-text">{{annuncio.descrizione}}</p>
+        <hr />
+        <p class="card-text">{{annuncio.prezzo}}</p>
       </div>
     </div>
   </div>
 </article>
-{% endmacro %}
-
-{% macro prenotazione_card(prenotazione) %}
-<li class="list-group-item d-flex align-items-center">
-  <h4 class="card-title my-auto align-self-center"><a href="/annunci/{{ prenotazione.annuncio.id }}">{{ prenotazione.annuncio.titolo }}</a></h5>
+{% endmacro %} {% macro prenotazione_card(prenotazione) %}
+<a
+  class="list-group-item d-flex align-items-center"
+  href="/annunci/{{ prenotazione.annuncio.id }}"
+>
+  <h5 class="card-title my-auto align-self-center">
+    {{ prenotazione.annuncio.titolo }}
+  </h5>
   <p class="card-text my-auto ms-2">{{ prenotazione.fascia_oraria }}</p>
   <p class="card-text my-auto ms-2">{{ prenotazione.data }}</p>
   <p class="card-text my-auto ms-2 me-auto">{{ prenotazione.status }}</p>
-  <a href="/prenotazione/{{prenotazione.id_prenotazione}}/delete" class="btn btn-primary">Cancella</a>
-</li>
-{% endmacro %}
-
-{% macro prenotazione_card_fulfilled(prenotazione) %}
+  {% if prenotazione.status == 0 %}
+  <p class="card-text my-auto ms-2">In elaborazione</p>
+  {% elif prenotazione.status == 1 %}
+  <p class="card-text my-auto ms-2">Approvata</p>
+  {% endif %}
+</a>
+{% endmacro %} {% macro prenotazione_card_fulfilled(prenotazione) %}
+<a href="/annunci/{{ prenotazione.annuncio.id }}" class="list-group-item">
+  <div class="d-flex align-items-center">
+    <h5 class="card-title my-auto">{{ prenotazione.annuncio.titolo }}</h5>
+    <p class="card-text my-auto ms-2 me-auto">
+      {{ prenotazione.annuncio.indirizzo }}
+    </p>
+    {% if prenotazione.status == 1 %}
+    <p class="card-text my-auto ms-2">Prenotazione accettata</p>
+    {% else %}
+    <p class="card-text my-auto ms-2">Prenotazione rifiutata</p>
+    {% endif %}
+  </div>
+  <div class="d-flex align-items-center">
+    <p class="card-text my-auto">{{ prenotazione.fascia_oraria }}</p>
+    <p class="card-text my-auto ms-2">{{ prenotazione.data }}</p>
+  </div>
+  {% if prenotazione.status == 2 %}
+  <hr />
+  <div class="d-flex align-items-center my-2">
+    <p class="card-text my-auto">Motivo del rifiuto:</p>
+    <p class="card-text my-auto ms-2">{{ prenotazione.motivo_rifiuto }}</p>
+  </div>
+  {% endif %}
+</a>
+{% endmacro %} {% macro prenotazione_modal(prenotazione) %}
+<div class="modal" id="modal{{ prenotazione.id_prenotazione }}" tabindex="-1">
+  <form
+    action="/prenotazione/{{prenotazione.id_prenotazione}}/reject"
+    method="POST"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Rifiuto prenotazione</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="recipient-email" class="col-form-label">Email:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="recipient-email"
+              value="{{ prenotazione.email_utente }}"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="reject-message" class="col-form-label"
+              >Motivo del rifiuto:</label
+            >
+            <textarea
+              name="motivo_rifiuto"
+              class="form-control"
+              id="reject-message"
+              required
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Chiudi
+          </button>
+          <button type="submit" class="btn btn-primary">Rifiuta</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endmacro %} {% macro prenotazione_card_pending(prenotazione) %}
 <li class="list-group-item d-flex align-items-center">
-  <h4 class="card-title my-auto align-self-center"><a href="/annunci/{{ prenotazione.annuncio.id }}">{{ prenotazione.annuncio.titolo }}</a></h5>
-  <p class="card-text my-auto ms-2">{{ prenotazione.fascia_oraria }}</p>
-  <p class="card-text my-auto ms-2">{{ prenotazione.data }}</p>
-  <p class="card-text my-auto ms-2 me-auto">{{ prenotazione.status }}</p>
-</li>
-{% endmacro %}
-
-{% macro prenotazione_card_pending(prenotazione) %}
-<li class="list-group-item d-flex align-items-center">
-  <h4 class="card-title my-auto align-self-center"><a href="/annunci/{{ prenotazione.annuncio.id }}">{{ prenotazione.annuncio.titolo }}</a></h5>
+  <h5 class="card-title my-auto align-self-center">
+    <a href="/annunci/{{ prenotazione.annuncio.id }}"
+      >{{ prenotazione.annuncio.titolo }}</a
+    >
+  </h5>
   <p class="card-text my-auto ms-2">{{ prenotazione.fascia_oraria }}</p>
   <p class="card-text my-auto ms-2">{{ prenotazione.data }}</p>
   <p class="card-text my-auto ms-2 me-auto">{{ prenotazione.status }}</p>
   <div class="btn-group">
-    <a href="/prenotazione/{{prenotazione.id_prenotazione}}/confirm" class="btn btn-primary">Conferma</a>
-    <a href="/prenotazione/{{prenotazione.id_prenotazione}}/reject" class="btn btn-primary">Rifiuta</a>
+    <a
+      href="/prenotazione/{{prenotazione.id_prenotazione}}/confirm"
+      class="btn btn-primary"
+      >Conferma</a
+    >
+    <button
+      class="btn btn-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#modal{{ prenotazione.id_prenotazione }}"
+    >
+      Rifiuta
+    </button>
   </div>
 </li>
-{% endmacro %}
-
-{% macro prenotazione_section(giorni) %}
-<ul class="nav nav-tabs d-flex justify-content-center" id="nav-tab" role="tablist">
-  {% for giorno in giorni %}
-  <li class="nav-item" role="presentation">
-    <button class="nav-link {% if loop.first %} active {% endif %}" data-bs-toggle="tab" id="tab{{ loop.index0 }}" data-bs-target="#form{{ loop.index0 }}" type="button" role="tab" aria-controls="form{{ loop.index0 }}" aria-selected="{%if loop.first %}true{% else %}false{% endif %}">{{ giorno['giorno'] }}</button>
-  </li>
-  {% endfor %}
-</ul>
-<div class="tab-content" id="tabdiv">
-  {% for giorno in giorni %}
-      <form class="tab-pane{% if loop.first %} show active{% endif %}" id="form{{ loop.index0 }}" {% if loop.first %}disabled{% endif %} role="tabpanel" aria-labelledby="tab{{ loop.index0 }}" tabindex="0" method="POST">
-        <div class="d-flex flex-column align-items-center">
-          <input type="text" name="data" value="{{giorno['match']}}" hidden>
-          <div class="d-flex justify-content-center">
-          {% for orario, enabled in giorno['fasce'].items() %}
-            <input type="radio" class="btn-check" id="{{giorno['giorno']}}-{{orario}}" name="fascia_oraria" value="{{ loop.index0 }}" autocomplete="off" {% if not enabled %} disabled {% endif %}>
-            <label class="btn btn-primary" for="{{giorno['giorno']}}-{{orario}}">{{ orario }}</label>
+{{ prenotazione_modal(prenotazione) }} {% endmacro %} {% macro
+prenotazione_section(giorni) %}
+<div class="modal modal-lg" id="modalPrenotazione" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Prenotazione</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <ul
+          class="nav nav-tabs d-flex justify-content-center"
+          id="nav-tab"
+          role="tablist"
+        >
+          {% for giorno in giorni %}
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link {% if loop.first %} active {% endif %}"
+              data-bs-toggle="tab"
+              id="tab{{ loop.index0 }}"
+              data-bs-target="#form{{ loop.index0 }}"
+              type="button"
+              role="tab"
+              aria-controls="form{{ loop.index0 }}"
+              aria-selected="{%if loop.first %}true{% else %}false{% endif %}"
+            >
+              {{ giorno['giorno'] }}
+            </button>
+          </li>
           {% endfor %}
-          </div>
-          <div class="form-check form-switch">
-            <input type="checkbox" class="form-check-input" id="{{giorno['giorno']}}-check" name="virtuale">
-            <label class="form-check-label" for="{{giorno['giorno']}}-check">Modalità virtuale</label>
-          </div>
-          <button type="submit" class="btn btn-primary">Prenota</button>
+        </ul>
+        <div class="tab-content" id="tabdiv">
+          {% for giorno in giorni %}
+          <form
+            class="tab-pane{% if loop.first %} show active{% endif %}"
+            id="form{{ loop.index0 }}"
+            {%
+            if
+            loop.first
+            %}disabled{%
+            endif
+            %}
+            role="tabpanel"
+            aria-labelledby="tab{{ loop.index0 }}"
+            tabindex="0"
+            method="POST"
+          >
+            <div class="d-flex flex-column align-items-center">
+              <input
+                type="text"
+                name="data"
+                value="{{giorno['match']}}"
+                hidden
+              />
+              <div class="d-flex justify-content-center">
+                {% for orario, enabled in giorno['fasce'].items() %}
+                <div class="m-2">
+                  <input
+                    required
+                    type="radio"
+                    class="btn-check"
+                    id="{{giorno['giorno']}}-{{orario}}"
+                    name="fascia_oraria"
+                    value="{{ loop.index0 }}"
+                    autocomplete="off"
+                    {%
+                    if
+                    not
+                    enabled
+                    %}
+                    disabled
+                    {%
+                    endif
+                    %}
+                  />
+                  <label
+                    class="btn btn-outline-primary"
+                    for="{{giorno['giorno']}}-{{orario}}"
+                    >{{ orario }}</label
+                  >
+                </div>
+                {% endfor %}
+              </div>
+              <div class="form-check form-switch m-2">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="{{giorno['giorno']}}-check"
+                  name="virtuale"
+                />
+                <label class="form-check-label" for="{{giorno['giorno']}}-check"
+                  >Modalità virtuale</label
+                >
+              </div>
+              <button type="submit" class="btn btn-primary">Prenota</button>
+            </div>
+          </form>
+          {% endfor %}
         </div>
-      </form>
-  {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %} {% macro message_toast(category, message) %}
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="toast-header">
+    <strong class="me-auto">{{ category }}</strong>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="toast"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="toast-body">{{ message }}</div>
+</div>
+{% endmacro %} {% macro ann_item(title, value) %}
+<div class="d-flex align-items-center">
+  <span class="w-25 mx-3 my-2">{{ title }}</span>
+  <div class="vr"></div>
+  <span class="mx-3 my-2">{{ value }}</span>
 </div>
 {% endmacro %}

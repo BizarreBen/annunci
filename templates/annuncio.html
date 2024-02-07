@@ -1,29 +1,36 @@
-{% import "macros.html" as macros%}
-{% extends "base.html" %}
-{% block content %}
+{% import "macros.html" as macros%} {% extends "base.html" %} {% block content
+%}
 <article class="container">
-	<section id="descrizione" class="row">
-		<div class="col-md-4">
+  <section id="descrizione" class="row">
+    <div class="col-md-4">
       <div id="carousel{{annuncio.id}}" class="carousel slide">
         <div class="carousel-indicators">
-					{% for i in range(annuncio.immagini|length) %}
+          {% for i in range(annuncio.immagini|length) %}
           <button
             type="button"
             data-bs-target="#carousel{{annuncio.id}}"
             data-bs-slide-to="{{i}}"
-            {% if loop.first %}
-						class="active"
+            {%
+            if
+            loop.first
+            %}
+            class="active"
             aria-current="true"
-						{% endif %}
+            {%
+            endif
+            %}
           ></button>
-					{% endfor %}
+          {% endfor %}
         </div>
         <div class="carousel-inner">
-					{% for immagine in annuncio.immagini %}
+          {% for immagine in annuncio.immagini %}
           <div class="carousel-item {% if loop.first %}active{% endif %}">
-            <img src="{{url_for('static', filename='uploads/' + immagine)}}" class="d-block w-100" />
+            <img
+              src="{{url_for('static', filename='uploads/' + immagine)}}"
+              class="d-block w-100"
+            />
           </div>
-					{% endfor %}
+          {% endfor %}
         </div>
         <button
           class="carousel-control-prev"
@@ -44,29 +51,61 @@
           <span class="visually-hidden">Next</span>
         </button>
       </div>
-		</div>
-		<div class="col-md-8">
-			<li class="list-group">
-				<ul class="list-group-item mb-0">{{ annuncio.titolo }}</ul>
-				<ul class="list-group-item mb-0">{{ annuncio.indirizzo }}</ul>
-				<ul class="list-group-item mb-0">{{ annuncio.tipo }}</ul>
-				<ul class="list-group-item mb-0">{{ annuncio.locali }}</ul>
-				<ul class="list-group-item mb-0">{{ annuncio.descrizione }}</ul>
-				<ul class="list-group-item mb-0">{{ annuncio.prezzo }}</ul>
-				<ul class="list-group-item mb-0">{{ annuncio.arredata }}</ul>
-				<ul class="list-group-item mb-0">{{ annuncio.id_locatore }}</ul>
-			</li>
-		</div>
-	</section>
-  {% if current_user.is_authenticated %}
-	  <hr>
-    <section id="prenotazione">
-    {% if prenotazione is not none %}
-      {{ macros.prenotazione_card(prenotazione) }}
-    {% else %}
-      {{ macros.prenotazione_section(giorni) }}
-    {% endif %}
-    </section>
-  {% endif %}
+    </div>
+    <div class="col-md-8">
+      <li class="list-group">
+        <ul class="list-group-item mb-0 p-0">
+          {{ macros.ann_item('Titolo', annuncio.titolo) }}
+        </ul>
+        <ul class="list-group-item mb-0 p-0">
+          {{ macros.ann_item('Indirizzo', annuncio.indirizzo) }}
+        </ul>
+        <ul class="list-group-item mb-0 p-0">
+          {{ macros.ann_item('Tipo', annuncio.tipo) }}
+        </ul>
+        <ul class="list-group-item mb-0 p-0">
+          {{ macros.ann_item('Numero locali', annuncio.locali) }}
+        </ul>
+        <ul class="list-group-item mb-0 p-0">
+          {{ macros.ann_item('Descrizione', annuncio.descrizione) }}
+        </ul>
+        <ul class="list-group-item mb-0 p-0">
+          {{ macros.ann_item('Prezzo', annuncio.prezzo) }}
+        </ul>
+        <ul class="list-group-item mb-0 p-0">
+          {{ macros.ann_item('Arredata', annuncio.arredata) }}
+        </ul>
+        <ul class="list-group-item mb-0 p-0">
+          {{ macros.ann_item('Email locatore', annuncio.id_locatore) }}
+        </ul>
+      </li>
+
+      {% if current_user.is_authenticated and current_user.email !=
+      annuncio.id_locatore and prenotazione is none %}
+      <button
+        class="btn btn-primary my-2 float-end"
+        data-bs-toggle="modal"
+        data-bs-target="#modalPrenotazione"
+      >
+        Prenota
+      </button>
+      {% endif %}
+    </div>
+  </section>
+  {% if current_user.is_authenticated and current_user.email != annuncio.id_locatore %}
+		{% if prenotazione is not none %}
+		<hr />
+		<section id="prenotazione" class="card">
+			<h3 class="card-header">Prenotazione attiva</h3>
+			<div class="list-group rounded-top-0">
+				{% if prenotazione.status == 0 %} {{ macros.prenotazione_card(prenotazione) }}
+				{% else %} {{ macros.prenotazione_card_fulfilled(prenotazione) }}
+				{% endif %}
+			</div>
+		</section>
+		{% else %}
+		<section id="prenotazione">{{ macros.prenotazione_section(giorni) }}</section>
+		{% endif %}
+	{% endif %}
 </article>
 {% endblock %}
