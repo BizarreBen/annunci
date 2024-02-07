@@ -263,7 +263,7 @@ def edit_ann(id):
                 flash("Valore campo `Tipo` fuori range", "Errore")
             return redirect(request.url)
 
-        if "locali" not in form or not (1 <= int(form["tipo"]) <= 5):
+        if "locali" not in form or not (1 <= int(form["locali"]) <= 5):
             if "locali" not in form:
                 flash("Numero di locali mancante", "Errore")
             else:
