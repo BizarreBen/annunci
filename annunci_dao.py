@@ -222,11 +222,11 @@ def insert_annuncio(annuncio: Annuncio, immagini, filepath):
                     background.save(
                         os.path.join(
                             filepath,
-                            f"{annuncio.id}{secure_filename(immagine.filename)}",
+                            f"{annuncio.id}{secure_filename(os.path.splitext(immagine.filename)[0])}.png",
                         )
                     )
             annuncio.immagini = [
-                f"{annuncio.id}{secure_filename(immagine.filename)}"
+                f"{annuncio.id}{secure_filename(os.path.splitext(immagine.filename)[0])}.png"
                 for immagine in immagini
             ]
             cursor.execute(query_update, ("|".join(annuncio.immagini), annuncio.id))
@@ -278,12 +278,12 @@ def edit_annuncio(annuncio: Annuncio, immagini, filepath, immagini_to_del):
                         background.save(
                             os.path.join(
                                 filepath,
-                                f"{annuncio.id}{secure_filename(immagine.filename)}",
+                            		f"{annuncio.id}{secure_filename(os.path.splitext(immagine.filename)[0])}.png",
                             )
                         )
                 annuncio.immagini.extend(
                     [
-                        f"{annuncio.id}{secure_filename(immagine.filename)}"
+                        f"{annuncio.id}{secure_filename(os.path.splitext(immagine.filename)[0])}.png"
                         for immagine in immagini
                     ]
                 )
