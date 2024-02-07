@@ -34,9 +34,9 @@
       <option {% if annuncio is not none and annuncio.locali == '5+' %}selected{% endif %} value="5">5+</option>
     </select>
   </div>
-  <div class="mb-3 form-">
-    <input type="textarea" placeholder="descrizione" class="form-control" id="descrizione" name="descrizione" value="{{annuncio.descrizione}}">
+  <div class="mb-3 input-group">
     <label class="input-group-text">Descrizione</label>
+    <textarea class="form-control" id="descrizione" name="descrizione" required>{{annuncio.descrizione}}</textarea>
   </div>
   <div class="mb-3 input-group">
     <span class="input-group-text">Prezzo</span>
