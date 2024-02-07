@@ -1,19 +1,28 @@
-{% extends "base.html" %}
-{% block login %}
-{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block login %} {% endblock %} {% block content %}
 <form method="POST">
   <div class="mb-3">
     <label for="email" class="form-label">Email address</label>
-    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+    <input
+      type="email"
+      class="form-control"
+      id="email"
+      name="email"
+      aria-describedby="emailHelp"
+    />
   </div>
   <div class="mb-3">
     <label for="password" class="form-label">Password</label>
-    <input type="password" class="form-control" id="password" name="password">
+    <input
+      type="password"
+      class="form-control"
+      id="password"
+      name="password"
+      required
+    />
   </div>
-  <div class="mb-3">
-    <label for="Tipo" class="form-label">Password</label>
-    <input type="numeric" class="form-control" id="Tipo" name="Tipo">
+  <div class="mb-3 form-check form-switch">
+    <input type="checkbox" class="form-check-input" id="Tipo" name="Tipo" />
+    <label for="Tipo" class="form-check-label">Crea account per locatore</label>
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
