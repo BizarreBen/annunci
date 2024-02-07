@@ -5,17 +5,17 @@
 <form method="POST" enctype="multipart/form-data">
   <div class="mb-3 input-group">
     <span class="input-group-text">Titolo</span>
-    <input type="text" class="form-control" id="titolo" name="titolo" value="{{annuncio.titolo}}">
+    <input type="text" class="form-control" id="titolo" name="titolo" value="{{annuncio.titolo}}" required>
   </div>
   {% if not request.url.endswith('/edit') %}
   <div class="mb-3 input-group">
     <span class="input-group-text">Indirizzo</span>
-    <input type="text" class="form-control" id="indirizzo" name="indirizzo" value="{{annuncio.indirizzo}}">
+    <input type="text" class="form-control" id="indirizzo" name="indirizzo" value="{{annuncio.indirizzo}}" required>
   </div>
   {% endif %}
   <div class="mb-3 input-group">
     <span class="input-group-text">Tipo</span>
-    <select class="form-select" id="tipo" name="tipo">
+    <select class="form-select" id="tipo" name="tipo" required>
       <option {% if annuncio is none %}selected{% endif %} disabled hidden>Seleziona</option>
       <option {% if annuncio is not none and annuncio.tipo == 0 %}selected{% endif %} value="0">Casa indipendente</option>
       <option {% if annuncio is not none and annuncio.tipo == 1 %}selected{% endif %} value="1">Appartamento</option>
@@ -25,7 +25,7 @@
   </div>
   <div class="mb-3 input-group">
     <span class="input-group-text">Locali</span>
-    <select class="form-select" id="locali" name="locali">
+    <select class="form-select" id="locali" name="locali" required>
       <option {% if annuncio is none %}selected{% endif %} disabled hidden>Seleziona</option>
       <option {% if annuncio is not none and annuncio.locali == '1' %}selected{% endif %} value="1">1</option>
       <option {% if annuncio is not none and annuncio.locali == '2' %}selected{% endif %} value="2">2</option>
@@ -35,12 +35,12 @@
     </select>
   </div>
   <div class="mb-3 input-group">
-    <label class="input-group-text">Descrizione</label>
+    <span class="input-group-text">Descrizione</span>
     <textarea class="form-control" id="descrizione" name="descrizione" required>{{annuncio.descrizione}}</textarea>
   </div>
   <div class="mb-3 input-group">
     <span class="input-group-text">Prezzo</span>
-    <input type="number" class="form-control" id="prezzo" name="prezzo" value="{{annuncio.prezzo}}">
+    <input type="number" class="form-control" id="prezzo" name="prezzo" value="{{annuncio.prezzo}}" required>
     <span class="input-group-text">€</span>
   </div>
   <div class="mb-3 form-check form-switch">
