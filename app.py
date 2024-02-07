@@ -37,6 +37,8 @@ class User(UserMixin):
 @login_manager.user_loader
 def load_user(email):
     db_user = utenti_dao.get_user(email)
+    if not db_user:
+      return None
 
     return User(
         email=db_user["email"], password=db_user["password"], tipo=int(db_user["Tipo"])
@@ -87,7 +89,7 @@ def login():
         user_form = request.form.to_dict()
         user_db = utenti_dao.get_user(user_form["email"])
 
-        if user_db and check_password_hash(user_db["password"], user_form["password"]):
+        if user_db is not None and check_password_hash(user_db["password"], user_form["password"]):
             user = User(
                 email=user_db["email"],
                 password=user_db["password"],
