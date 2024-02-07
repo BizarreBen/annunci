@@ -7,5 +7,19 @@
 <a href="/?order=locali" class="btn">
 	<i class="bi bi-arrow-up">Prezzo DESC</i>
 </a>
-{% endif %} {% for annuncio in annunci %} {{ macros.annuncio_card(annuncio) }}
+{% endif %}
+{% if annunci|length == 0 %}
+<article class="card mb-3">
+  <div class="row">
+    <div class="col">
+      <div class="card-body">
+        <h5 class="card-title">
+					Non sono presenti annunci visibili
+        </h5>
+      </div>
+    </div>
+  </div>
+</article>
+{% endif %}
+{% for annuncio in annunci %} {{ macros.annuncio_card(annuncio) }}
 {% endfor %} {% endblock %}
