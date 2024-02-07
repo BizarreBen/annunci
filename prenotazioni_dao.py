@@ -180,7 +180,7 @@ def get_prenotazione(email, annuncio_id):
 
 
 def get_prenotazione_if_not_rejected(email, annuncio_id):
-    query = f"SELECT * FROM prenotazioni INNER JOIN annunci ON annunci.Id = prenotazioni.id_annuncio WHERE id_annuncio = ? AND email_utente == ? AND JULIANDAY(data) >= JULIANDAY(DATE('now')) AND status <> 2"
+    query = f"SELECT * FROM prenotazioni INNER JOIN annunci ON annunci.Id = prenotazioni.id_annuncio WHERE id_annuncio = ? AND email_utente == ? AND JULIANDAY(data) >= JULIANDAY(DATE('now')) AND prenotazioni.status != 2"
 
     with sqlite3.connect(db_location) as connection:
         connection.row_factory = sqlite3.Row
