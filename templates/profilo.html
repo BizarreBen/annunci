@@ -1,26 +1,26 @@
 {% import "macros.html" as macros%} {% extends "base.html" %} {% block content
 %}
 <div class="container">
-	<h1>{{ current_user.email }}</h1>
+	<h2>Utente: {{ current_user.email }}</h1>
 
   <article class="card">
-		<h3 class="card-header">Prenotazioni attive</h3>
+		<h4 class="card-header">Storico prenotazioni</h3>
 		{% if prenotazioni|length == 0 %}
-			<p class="my-2 mx-auto">Non ci sono prenotazioni attive</p>
+			<p class="my-2 mx-auto">Non è stata effettuata nessuna prenotazione</p>
 		{% else %}
-			<ul class="list-group list-group-flush">
+			<div class="list-group list-group-flush">
 			{% for prenotazione in prenotazioni %}
-			{% if current_user.tipo == 1 %}
 				{% if prenotazione['status'] == 0 %}
-				{{ macros.prenotazione_card_pending(prenotazione) }}
+					{% if current_user.tipo == 1 %}
+					{{ macros.prenotazione_card_pending(prenotazione) }}
+					{% else %}
+					{{ macros.prenotazione_card(prenotazione) }}
+					{% endif %}
 				{% else %}
 				{{ macros.prenotazione_card_fulfilled(prenotazione) }}
 				{% endif %}
-			{% else %}
-			{{ macros.prenotazione_card(prenotazione) }}
-			{% endif %}
 			{% endfor %}
-			</ul>
+			</div>
 		{% endif %}
   </article>
   {% if current_user.tipo == 1 %}

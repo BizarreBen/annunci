@@ -5,17 +5,17 @@
 <form method="POST" enctype="multipart/form-data">
   <div class="mb-3 input-group">
     <span class="input-group-text">Titolo</span>
-    <input type="text" class="form-control" id="titolo" name="titolo">
+    <input type="text" class="form-control" id="titolo" name="titolo" required>
   </div>
   {% if not request.url.endswith('/edit') %}
   <div class="mb-3 input-group">
     <span class="input-group-text">Indirizzo</span>
-    <input type="text" class="form-control" id="indirizzo" name="indirizzo">
+    <input type="text" class="form-control" id="indirizzo" name="indirizzo" required>
   </div>
   {% endif %}
   <div class="mb-3 input-group">
     <span class="input-group-text">Tipo</span>
-    <select class="form-select" id="tipo" name="tipo">
+    <select class="form-select" id="tipo" name="tipo" required>
       <option selected disabled hidden>Seleziona</option>
       <option value="0">Casa indipendente</option>
       <option value="1">Appartamento</option>
@@ -25,7 +25,7 @@
   </div>
   <div class="mb-3 input-group">
     <span class="input-group-text">Locali</span>
-    <select class="form-select" id="locali" name="locali">
+    <select class="form-select" id="locali" name="locali" required>
       <option selected disabled hidden>Seleziona</option>
       <option value="1">1</option>
       <option value="2">2</option>
@@ -34,13 +34,13 @@
       <option value="5">5+</option>
     </select>
   </div>
-  <div class="mb-3 form-">
-    <input type="textarea" placeholder="descrizione" class="form-control" id="descrizione" name="descrizione">
+  <div class="mb-3 input-group">
     <label class="input-group-text">Descrizione</label>
+    <textarea class="form-control" id="descrizione" name="descrizione" required></textarea>
   </div>
   <div class="mb-3 input-group">
     <span class="input-group-text">Prezzo</span>
-    <input type="number" class="form-control" id="prezzo" name="prezzo">
+    <input type="number" class="form-control" id="prezzo" name="prezzo" required>
     <span class="input-group-text">€</span>
   </div>
   <div class="mb-3 form-check form-switch">
@@ -53,7 +53,7 @@
   </div>
   <div class="mb-3 input-group">
     <span class="input-group-text">Immagini</span>
-    <input type="file" class="form-control" id="immagini" name="immagini" multiple>
+    <input type="file" class="form-control" id="immagini" name="immagini" multiple required accept="image/*">
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
