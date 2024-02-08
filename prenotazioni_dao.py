@@ -54,6 +54,7 @@ def from_form(formdict: dict):
         virtuale=formdict.get("virtuale", "off") == "on",
         status=int(formdict.get("status", "0")),
         motivo_rifiuto=formdict.get("motivo_rifiuto", ""),
+				annuncio=annunci_dao.get_annuncio_by_id(formdict["id_annuncio"])
     )
 
 

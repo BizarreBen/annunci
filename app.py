@@ -327,7 +327,10 @@ def delete_prenotazione(id):
 @login_required
 def insert_prenotazione():
     prenotazione = prenotazioni_dao.from_form(request.form.to_dict())
-    if not prenotazioni_dao.insert_prenotazione(prenotazione=prenotazione):
+
+    if prenotazione.annuncio.id_locatore == current_user.email:
+        flash("Non è stato possibile effettuare la prenotazione", "Errore")
+    elif not prenotazioni_dao.insert_prenotazione(prenotazione=prenotazione):
         flash("Qualcosa è andato storto nell'inserimento della prenotazione", "Errore")
     else:
         flash("Prenotazione inserita con successo", "Successo")
