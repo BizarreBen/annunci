@@ -1,7 +1,7 @@
 {% macro annuncio_card(annuncio) %}
 <article class="card mb-3">
   <div class="row">
-    <div class="col-lg-4 col-md-6">
+    <div class="col-lg-4 col-md-6 d-flex justify-content-center">
       <div id="carousel{{annuncio.id}}" class="carousel slide my-auto">
         <div class="carousel-indicators">
           {% for i in range(annuncio.immagini|length) %}
